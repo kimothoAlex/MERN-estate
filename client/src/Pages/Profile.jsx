@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   getDownloadURL,
   getStorage,
@@ -7,14 +7,18 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
+import { updateFailure, updateStart, updateSuccess } from "../redux/user/user";
 
 const Profile = () => {
   const fileRef = useRef(null);
-  const { currentUser } = useSelector((state) => state.user);
+
+  const { currentUser, loading, error } = useSelector((state) => state.user);
   const [file, setFile] = useState(undefined);
   const [filePerc, setFilePerc] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
+  const [success, setSuccess] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (file) {
@@ -47,10 +51,40 @@ const Profile = () => {
     );
   };
 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateStart());
+      const res = await fetch(`api/user/update/${currentUser._id}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (data.success === false) {
+        dispatch(updateFailure(data.message));
+        return;
+      }
+      dispatch(updateSuccess(data));
+      setSuccess(true);
+    } catch (error) {
+      dispatch(updateFailure(error.message));
+    }
+  };
+
   return (
     <div className="max-w-lg p-3 mx-auto">
       <h1 className="text-3xl font-semibold text-center my-7">Profile</h1>
-      <form className="flex flex-col gap-4 ">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 ">
         <input
           onChange={(e) => setFile(e.target.files[0])}
           type="file"
@@ -77,30 +111,44 @@ const Profile = () => {
         </p>
         <input
           type="text"
+          onChange={handleChange}
+          defaultValue={currentUser.username}
           className="border p-3 rounded-lg"
           placeholder="username "
           id="username"
         />
         <input
           type="email"
+          onChange={handleChange}
+          defaultValue={currentUser.email}
           className="border p-3 rounded-lg"
           placeholder="email"
           id="email"
         />
         <input
           type="password"
+          onChange={handleChange}
           className="border p-3 rounded-lg"
           placeholder="password"
           id="password"
         />
-        <button className="bg-slate-800 p-3 rounded-lg text-white hover:opacity-95 disabled:opacity-70">
+        <button
+          disabled={loading}
+          className="bg-slate-800 p-3 rounded-lg text-white hover:opacity-95 disabled:opacity-70"
+        >
           Update Profile
         </button>
       </form>
+      <div className="mt-5">
+        {error && <p className="text-red-700">{error}</p>}
+      </div>
       <div className="mt-5 flex justify-between">
         <span className="text-red-700">Delete Account</span>
         <span className="text-red-700">Sign Out</span>
       </div>
+      <p className="text-green-700">
+        {success ? " User updated successfully " : ""}
+      </p>
     </div>
   );
 };
