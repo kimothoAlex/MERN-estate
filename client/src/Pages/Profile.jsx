@@ -190,10 +190,10 @@ const Profile = () => {
         {error && <p className="text-red-700">{error}</p>}
       </div>
       <div className="mt-5 flex justify-between">
-        <span onClick={handleDelete} className="text-red-700">
+        <span onClick={handleDelete} className="text-red-700 cursor-pointer">
           Delete Account
         </span>
-        <span onClick={handleSignOut} className="text-red-700">
+        <span onClick={handleSignOut} className="text-red-700 cursor-pointer">
           Sign Out
         </span>
       </div>
