@@ -18,6 +18,7 @@ import {
   updateStart,
   updateSuccess,
 } from "../redux/user/user";
+import { Link } from "react-router-dom";
 
 const Profile = () => {
   const fileRef = useRef(null);
@@ -185,6 +186,12 @@ const Profile = () => {
         >
           Update Profile
         </button>
+        <Link
+          className="bg-green-700 text-white p-3 rounded-lg hover:opacity-95 text-center uppercase"
+          to="/create-listing"
+        >
+          Create Listing
+        </Link>
       </form>
       <div className="mt-5">
         {error && <p className="text-red-700">{error}</p>}
