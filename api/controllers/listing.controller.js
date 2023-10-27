@@ -23,8 +23,8 @@ export const deleteListing = async (req, res, next) => {
   }
 
   try {
-    const udatedLiting = await Listing.findByIdAndDelete(req.params.id);
-    res.status(200).json(udatedLiting);
+    await Listing.findByIdAndDelete(req.params.id);
+    res.status(200).json("Listing deleted successfully");
   } catch (error) {
     next(error);
   }
@@ -39,8 +39,10 @@ export const updateListing = async (req, res, next) => {
     return next(errorHandler(401, "You can upload your own listing"));
   }
   try {
-    await Listing.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.status(200).json("Listing updated successfully");
+    const updatedListing = Listing.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    res.status(200).json(updatedListing);
   } catch (error) {
     next(error);
   }
