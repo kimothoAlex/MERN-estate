@@ -265,7 +265,7 @@ const Profile = () => {
               key={listing._id}
               className="flex justify-between items-center border rounded-lg gap-4"
             >
-              <Link to={`listing/${listing._id}`}>
+              <Link to={`/listing/${listing._id}`}>
                 <img
                   src={listing.imageUrls[0]}
                   className="w-16 h-16 object-contain"
@@ -274,7 +274,7 @@ const Profile = () => {
               </Link>
               <Link
                 className="text-slate-700 font-semibold hover:underline truncate flex-1"
-                to={`listing/${listing._id}`}
+                to={`/listing/${listing._id}`}
               >
                 <p>{listing.name}</p>
               </Link>
