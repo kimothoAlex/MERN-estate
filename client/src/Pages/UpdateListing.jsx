@@ -23,7 +23,7 @@ const UpdateListing = () => {
     bedrooms: 1,
     bathrooms: 1,
     regularPrice: 50,
-    discountedPrice: 50,
+    discountPrice: 0,
     offer: false,
     parking: false,
     furnished: false,
@@ -315,10 +315,10 @@ const UpdateListing = () => {
                   className="border p-3 border-gray-300 rounded-lg"
                   min="50"
                   max="1000000"
-                  id="discountedPrice"
+                  id="discountPrice"
                   required
                   onChange={handleChange}
-                  value={formData.discountedPrice}
+                  value={formData.discountPrice}
                 />
                 <div className="flex flex-col items-center">
                   <p>Discounted price</p>
